@@ -22,6 +22,7 @@ html {
   margin: 20px auto;
   height: 100%;
   width: 100vh;
+  padding-bottom: 20px;
 }
 
 .container .title {

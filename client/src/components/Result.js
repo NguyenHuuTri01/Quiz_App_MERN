@@ -1,24 +1,28 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ResuiltTable from './ResuiltTable';
+import ResultTable from './ResultTable';
 import '../styles/Result.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetResultAction } from '../redux/result_reducer';
 import { resetAllAction } from '../redux/question_reducer';
 import { attempts_Number, earnPoints_Number, flagResult } from '../helper/helper';
+import { usePublicResult } from '../hooks/setResult';
 
 export default function Result() {
 
     const dispatch = useDispatch();
     const { questions: { queue, answers }, result: { result, userId } } = useSelector(state => state)
-
-    useEffect(() => {
-        console.log(flag);
-    })
     const totalPoints = queue.length * 10;
     const attempts = attempts_Number(result);
     const earnPoints = earnPoints_Number(result, answers, 10);
     const flag = flagResult(totalPoints, earnPoints);
+    usePublicResult({
+        result,
+        username: userId,
+        attempts,
+        points: earnPoints,
+        achived: flag ? "Passed" : "Failed"
+    });
     function onRestart() {
         dispatch(resetAllAction());
         dispatch(resetResultAction());
@@ -31,7 +35,7 @@ export default function Result() {
             <div className='result flex-center'>
                 <div className='flex'>
                     <span> Username </span>
-                    <span className='bold'>Daily Tuition</span>
+                    <span className='bold'>{userId}</span>
                 </div>
                 <div className='flex'>
                     <span> Total Quiz Points : </span>
@@ -62,7 +66,7 @@ export default function Result() {
                 <Link className='btn' to={'/'} onClick={onRestart}>Restart</Link>
             </div>
             <div className='container'>
-                <ResuiltTable />
+                <ResultTable />
             </div>
         </div>
     )
